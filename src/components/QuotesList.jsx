@@ -1,61 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import QuoteCard from './QuoteCard';
 import Pagination from './Pagination';
 import LoadingIndicator from './LoadingIndicator';
 import ErrorState from './ErrorState';
+import { useQuotes } from '../hooks/useQuotes';
 
 const QuotesList = () => {
-  const [quotes, setQuotes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [limit] = useState(10); // Standard limit
+  const {
+    quotes,
+    error,
+    loading,
+    page,
+    totalPages,
+    fetchQuotes,
+    goToPage
+  } = useQuotes();
 
-  const fetchQuotes = async (page) => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch(`https://api.freeapi.app/api/v1/public/quotes?page=${page}&limit=${limit}`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.success && data.data) {
-        setQuotes(data.data.data);
-        setTotalPages(data.data.totalPages);
-      } else {
-        throw new Error(data.message || 'Failed to fetch quotes structure was unexpected');
-      }
-    } catch (err) {
-      console.error("Error fetching quotes:", err);
-      setError(err.message || 'An unexpected error occurred while fetching quotes.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Fetch data when component mounts or page changes
   useEffect(() => {
-    fetchQuotes(currentPage);
-    // Scroll to top when page changes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPage]);
-
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
+    fetchQuotes();
+  }, [fetchQuotes]);
 
   const handleRetry = () => {
-    fetchQuotes(currentPage);
+    fetchQuotes(page);
   };
 
   return (
@@ -70,7 +36,7 @@ const QuotesList = () => {
         <div className="w-24 h-1 bg-indigo-600 mx-auto mt-6 rounded-full opacity-80"></div>
       </div>
 
-      {isLoading ? (
+      {loading ? (
         <LoadingIndicator />
       ) : error ? (
         <ErrorState message={error} onRetry={handleRetry} />
@@ -90,9 +56,9 @@ const QuotesList = () => {
 
           {totalPages > 1 && (
             <Pagination 
-              currentPage={currentPage} 
+              currentPage={page} 
               totalPages={totalPages} 
-              onPageChange={handlePageChange} 
+              onPageChange={goToPage} 
             />
           )}
         </>

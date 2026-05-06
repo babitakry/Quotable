@@ -15,7 +15,7 @@ function App() {
             </span>
           </div>
           <nav>
-            <a href="https://freeapi.app/" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-gray-500 hover:text-indigo-600 transition-colors">
+            <a href="https://freeapi.app/" target="_blank" rel="noopener noreferrer" className="text-sm font-medium hover:text-indigo-900 text-indigo-600 transition-colors">
               Powered by FreeAPI
             </a>
           </nav>
@@ -26,9 +26,6 @@ function App() {
         <QuotesList />
       </main>
 
-      <footer className="mt-auto py-8 text-center text-sm text-gray-500 border-t border-indigo-50">
-        <p>Built with React & Tailwind CSS.</p>
-      </footer>
     </div>
   );
 }
