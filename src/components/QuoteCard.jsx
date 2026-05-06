@@ -1,4 +1,4 @@
-import React from 'react';
+import CopyButton from './CopyButton';
 
 const QuoteCard = ({ quote }) => {
   const { content, author, tags } = quote;
@@ -28,6 +28,8 @@ const QuoteCard = ({ quote }) => {
               </span>
             )}
           </div>
+
+          <CopyButton textToCopy={`"${content}" — ${author}`} />
         </div>
 
         <blockquote className="mb-8">
